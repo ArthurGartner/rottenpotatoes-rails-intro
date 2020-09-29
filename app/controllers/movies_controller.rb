@@ -7,16 +7,19 @@ def show
   end
 
   def index
+    @all_ratings = Movie.all_ratings
+    @selected_ratings = params[:ratings] || Movie.all_ratings_as_hash
+      
     sort = params[:sort]
       
     if sort == 'by_title'
-        @movies = Movie.order(:title)
+        @movies = Movie.with_ratings(@selected_ratings.keys).order(:title)
         @title_class = 'bg-warning hilite'
     elsif sort == 'by_date'
         @date_class = 'bg-warning hilite'
-        @movies = Movie.order(:release_date)
+        @movies = Movie.with_ratings(@selected_ratings.keys).order(:release_date)
     else 
-        @movies = Movie.all
+        @movies = Movie.with_ratings(@selected_ratings.keys)
     end
   end
 
