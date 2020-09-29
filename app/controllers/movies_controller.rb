@@ -7,7 +7,17 @@ def show
   end
 
   def index
-    @movies = Movie.all
+    sort = params[:sort]
+      
+    if sort == 'by_title'
+        @movies = Movie.order(:title)
+        @title_class = 'bg-warning hilite'
+    elsif sort == 'by_date'
+        @date_class = 'bg-warning hilite'
+        @movies = Movie.order(:release_date)
+    else 
+        @movies = Movie.all
+    end
   end
 
   def new
