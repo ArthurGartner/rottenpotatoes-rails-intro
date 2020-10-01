@@ -12,6 +12,10 @@ def show
       
     sort = params[:sort] || session[:storedsort]
       
+    #3 possible redirects
+    #-just sort
+    #-just ratings
+    #both ratings and sort
     
     if !params[:sort] & session[:storedsort]
         if params_found
@@ -28,13 +32,7 @@ def show
             redirect_to movies_path(:ratings => params_found) and return
         end
     end
-            
-      
-    #3 possible redirects
-      #-just sort
-      #-just ratings
-      #both ratings and sort
-             
+                        
       
     @all_ratings = Movie.all_ratings
                   
