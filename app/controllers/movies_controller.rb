@@ -7,10 +7,47 @@ def show
   end
 
   def index
-    @all_ratings = Movie.all_ratings
-    @selected_ratings = params[:ratings] || Movie.all_ratings_as_hash
       
-    sort = params[:sort]
+    params_found = params[:ratings] || session[:storedparam]
+      
+    sort = params[:sort] || session[:storedsort]
+      
+    
+    if !params[:sort] & session[:storedsort]
+        if params_found
+            redirect_to movies_path(:sort => sort, :ratings => params_found) and return
+        else
+            redirect_to movies_path(:sort => sort) and return
+        end
+    end
+      
+    if !params[:ratings] & session[:storedparam]
+        if sort
+            redirect_to movies_path(:sort => sort, :ratings => params_found) and return
+        else
+            redirect_to movies_path(:ratings => params_found) and return
+        end
+    end
+            
+      
+    #3 possible redirects
+      #-just sort
+      #-just ratings
+      #both ratings and sort
+             
+      
+    @all_ratings = Movie.all_ratings
+                  
+    @selected_ratings = params_found || Movie.all_ratings_as_hash
+      
+        
+    if !params_found.nil?
+        session[:storedparam] = params_found
+    end
+        
+    if !sort.nil?
+        session[:storedsort] = sort
+    end
       
     if sort == 'by_title'
         @movies = Movie.with_ratings(@selected_ratings.keys).order(:title)
